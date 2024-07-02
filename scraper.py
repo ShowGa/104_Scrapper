@@ -2,6 +2,45 @@ import sys
 import requests
 from bs4 import BeautifulSoup
 
+import openpyxl
+from openpyxl import load_workbook
+from openpyxl.styles import Font
+import os
+
+def write_to_excel(data_dic, file_path="job_info.xlsx"):
+    # {--- check if the file was existed ---} #
+    file_existed = os.path.exists(file_path)
+
+    if file_existed:
+        workbook = load_workbook(file_path)
+        sheet = workbook.active
+    else:
+        workbook = openpyxl.Workbook()
+        sheet = workbook.active
+        # write table head when create new file #
+        for col, key in enumerate(data_dic.keys(), start=1):
+            cell = sheet.cell(row=1, column=col, value=key) # write into specified cell
+            cell.font = Font(bold=True)
+            
+    
+    # {--- check if the table heads were existed ---} #
+    
+    # check the next row
+    next_row = sheet.max_row + 1
+    print(sheet.max_row)
+
+    # check if the next_row == 2 (if yes, the table might be not existed)
+    if next_row == 2:
+        for col, key in enumerate(data_dic.keys(), start=1):
+            cell = sheet.cell(row=1, column=col, value=key)
+            cell.font = Font(bold=True)
+
+    # write the data
+    for col, key in enumerate(data_dic.keys(), start=1):
+        sheet.cell(row=next_row, column=col, value=data_dic[key])
+
+    workbook.save(file_path)
+
 def try_scrap(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
@@ -41,6 +80,9 @@ def try_scrap(url):
     list_row_elements = soup.find_all("div", class_="list-row")
     for element in list_row_elements:
         pick_head_data(head_data_dic, soup, element)
+
+    # execute the excel writing
+    write_to_excel(head_data_dic)
 
     return head_data_dic
     # print(head_data_dic)

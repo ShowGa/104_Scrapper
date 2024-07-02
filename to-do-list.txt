@@ -1,3 +1,5 @@
 1. make scrape content looks more organized
 
 2. setting up the google sheets API
+
+3. Write Local Excel
