@@ -42,7 +42,8 @@ def try_scrap(url):
     for element in list_row_elements:
         pick_head_data(head_data_dic, soup, element)
 
-    print(head_data_dic)
+    return head_data_dic
+    # print(head_data_dic)
 
 
 # pick the list-row-head and data
@@ -64,6 +65,3 @@ def get_text_from_element(element):
         return div_element.get_text(strip=True)
     
     return ""
-
-
-try_scrap("https://www.104.com.tw/job/7eki0?jobsource=m_index_job_c")
